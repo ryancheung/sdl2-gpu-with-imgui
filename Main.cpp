@@ -228,8 +228,6 @@ void main_loop(GPU_Target* screen)
     // TODO: Add a real vertex shader
     
     
-    float t;
-    
     Uint8 done;
     SDL_Event event;
 
@@ -309,6 +307,7 @@ void main_loop(GPU_Target* screen)
         
         /** Start drawing staff with SDL_gpu **/
         // Color mod
+        float t = fpsCapStartTicks / 1000.f;
         GPU_ActivateShaderProgram(color_shader, &color_block);
         update_color_shader((1+sin(t))/2, (1+sin(t+1))/2, (1+sin(t+2))/2, 1.0f, color_loc);
         GPU_Blit(image, NULL, screen, screen->w/4, screen->h/4);
