@@ -4,7 +4,6 @@
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
-#include <GL/gl3w.h>
 
 #include <iostream>
 #include <vector>
@@ -14,33 +13,6 @@
 
 const int SCREEN_FPS = 100;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
-
-const char* SetupImGui()
-{
-    // Decide GL+GLSL versions
-#if __APPLE__
-    // GL 3.2 Core + GLSL 150
-    const char* glsl_version = "#version 150";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-#else
-    // GL 3.0 + GLSL 130
-    const char* glsl_version = "#version 130";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
-
-    // Create window with graphics context
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-    return glsl_version;
-}
 
 // Loads a shader and prepends version/compatibility info before compiling it.
 // Normally, you can just use GPU_LoadShader() for shader source files or GPU_CompileShader() for strings.
@@ -233,19 +205,8 @@ void main_loop(GPU_Target* screen)
 
     ///---Start ImGUI---///
 
-    const char* glsl_version = SetupImGui();
-
     SDL_GLContext& gl_context = screen->context->context;
     SDL_Window* window = SDL_GetWindowFromID(screen->context->windowID);
-
-    // Initialize OpenGL loader
-    bool err = gl3wInit() != 0;
-
-    if (err)
-    {
-        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-        return;
-    }
 
     // Setup Dear ImGui binding
     IMGUI_CHECKVERSION();
@@ -254,6 +215,8 @@ void main_loop(GPU_Target* screen)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
 
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+
+    const char* glsl_version = "#version 120";
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Setup style
@@ -360,7 +323,7 @@ int main(int, char**)
 {
     GPU_Target* screen;
 
-    GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC);
+    GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC | GPU_INIT_REQUEST_COMPATIBILITY_PROFILE);
     screen = GPU_Init(800, 600, GPU_DEFAULT_INIT_FLAGS);
     if(screen == NULL)
         return -1;
