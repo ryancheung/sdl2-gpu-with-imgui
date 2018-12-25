@@ -9,5 +9,5 @@ The cmake macro `FindSDL_gpu` only works in unix-like systems, so you can build 
 
 ### Tested environment
 
-1. OS: Ubuntu 18.04 Desktop
-2. OpenGL: 4.6.0
+1. Ubuntu 18.04
+2. macOS 10.14
