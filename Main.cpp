@@ -260,6 +260,13 @@ void main_loop(GPU_Target* screen)
 
         ImGui::Begin("Debug Info");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        GPU_Renderer* renderer = GPU_GetCurrentRenderer();
+        GPU_RendererID id = renderer->id;
+
+        ImGui::Text("Using renderer: %s (%d.%d)\n", id.name, id.major_version, id.minor_version);
+        ImGui::Text("  Shader versions supported: %d to %d\n\n", renderer->min_shader_version, renderer->max_shader_version);
+
         ImGui::End();
 
         // Rendering
