@@ -12,14 +12,16 @@ set(SRC_GRP_IMGUI_SDL2_IMPL
     examples/imgui_impl_opengl3.cpp
 )
 
-set(SRC_GRP_IMGUI_GL3W
-    examples/libs/gl3w/GL/gl3w.c
+set(SRC_GRP_IMGUI_GLEW
+    examples/libs/glew/glew.c
 )
+
+add_definitions(-DIMGUI_IMPL_OPENGL_LOADER_GLEW)
 
 set(LIBRARY_SRCS
     ${SRC_GRP_IMGUI}
     ${SRC_GRP_IMGUI_SDL2_IMPL}
-    ${SRC_GRP_IMGUI_GL3W}
+    ${SRC_GRP_IMGUI_GLEW}
 )
 
 include_directories(
@@ -28,7 +30,7 @@ include_directories(
 )
 
 include_directories(SYSTEM
-  ${CMAKE_CURRENT_SOURCE_DIR}/examples/libs/gl3w
+  ${CMAKE_CURRENT_SOURCE_DIR}/examples/libs/glew
   ${SDL2_INCLUDE_DIR}
   ${SDL2_IMAGE_INCLUDE_DIR}
   ${SDL2_MIXER_INCLUDE_DIR}
