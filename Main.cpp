@@ -250,31 +250,6 @@ void main_loop(GPU_Target* screen)
 
         GPU_ClearRGBA(screen, clear_color.x * 255, clear_color.y * 255, clear_color.z * 255, clear_color.w * 255);
 
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(window);
-        ImGui::NewFrame();
-
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        ImGui::Begin("Debug Info");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-        GPU_Renderer* renderer = GPU_GetCurrentRenderer();
-        GPU_RendererID id = renderer->id;
-
-        ImGui::Text("Using renderer: %s (%d.%d)\n", id.name, id.major_version, id.minor_version);
-        ImGui::Text("  Shader versions supported: %d to %d\n\n", renderer->min_shader_version, renderer->max_shader_version);
-
-        ImGui::End();
-
-        // Rendering
-        ImGui::Render();
-        SDL_GL_MakeCurrent(window, gl_context);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        
         /** Start drawing staff with SDL_gpu **/
         // Color mod
         float t = fpsCapStartTicks / 1000.f;
@@ -302,6 +277,31 @@ void main_loop(GPU_Target* screen)
         GPU_Blit(image, NULL, screen, 3*screen->w/4, 3*screen->h/4);
         
         GPU_ActivateShaderProgram(0, NULL);
+
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(window);
+        ImGui::NewFrame();
+
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
+
+        ImGui::Begin("Debug Info");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+        GPU_Renderer* renderer = GPU_GetCurrentRenderer();
+        GPU_RendererID id = renderer->id;
+
+        ImGui::Text("Using renderer: %s (%d.%d)\n", id.name, id.major_version, id.minor_version);
+        ImGui::Text("  Shader versions supported: %d to %d\n\n", renderer->min_shader_version, renderer->max_shader_version);
+
+        ImGui::End();
+
+        // Rendering
+        ImGui::Render();
+        SDL_GL_MakeCurrent(window, gl_context);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        
         
         GPU_Flip(screen);
 
